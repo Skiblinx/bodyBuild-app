@@ -1,15 +1,39 @@
 import { useEffect, useState } from "react"
 import { Box, Button, Stack, TextField, Typography } from "@mui/material"
 import { exerciseOptions, fetchData } from "../utils/FetchData"
+import HorizontalScrollbar from "./HorizontalScrollbar"
 
-const SearchExercises = () => {
+const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
   const [search, setSearch] = useState('')
+  const [bodyParts, setBodyParts] = useState([])
+
+
+  useEffect(() => {
+    const fetchExerciseData = async () => {
+      const bodyPartsData = await fetchData(
+        'https://exercisedb.p.rapidapi.com/exercises/bodyPartList',
+        exerciseOptions
+      )
+      setBodyParts(['all', ...bodyPartsData])
+    }
+    fetchExerciseData()
+  }, [])
 
   const handleSearch = async () => {
     if (search) {
-      const exerciseData = await fetchData('https://exercisedb.p.rapidapi.com/exercises/bodyPartList', exerciseOptions)
+      const exerciseData = await fetchData(
+        'https://exercisedb.p.rapidapi.com/exercises',
+        exerciseOptions)
 
-      console.log(exerciseData)
+      const searchedExercises = exerciseData.filter((exercise) => {
+        exerciseData.name.toLowerCase().includes(search) ||
+          exerciseData.target.toLowerCase().includes(search) ||
+          exerciseData.equipment.toLowerCase().includes(search) ||
+          exerciseData.bodyPart.toLowerCase().includes(search)
+      })
+
+      setSearch('')
+      setExercises(searchedExercises)
     }
   }
 
@@ -49,7 +73,7 @@ const SearchExercises = () => {
           }}
           height='76px'
           value={search}
-          onChange={(e) => { setSearch(e.target.value) }}
+          onChange={(e) => { setSearch(e.target.toLowerCase.value) }}
           placeholder="search exercises"
           type="text"
         />
@@ -67,6 +91,13 @@ const SearchExercises = () => {
           }}
           onClick={handleSearch}
         >Search</Button>
+      </Box>
+
+      <Box
+        sx={{ position: 'relative', width: '100%', p: '20px', }}
+      >
+        <HorizontalScrollbar data={bodyParts} bodyPart={bodyPart} setBodyPart={setBodyPart} />
+
       </Box>
 
     </Stack>
