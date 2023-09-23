@@ -26,10 +26,10 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
         exerciseOptions)
 
       const searchedExercises = exerciseData.filter((exercise) => {
-        exerciseData.name.toLowerCase().includes(search) ||
-          exerciseData.target.toLowerCase().includes(search) ||
-          exerciseData.equipment.toLowerCase().includes(search) ||
-          exerciseData.bodyPart.toLowerCase().includes(search)
+        exercise.name.toLowerCase().includes(search) ||
+          exercise.target.toLowerCase().includes(search) ||
+          exercise.equipment.toLowerCase().includes(search) ||
+          exercise.bodyPart.toLowerCase().includes(search)
       })
 
       setSearch('')
@@ -73,7 +73,7 @@ const SearchExercises = ({ setExercises, bodyPart, setBodyPart }) => {
           }}
           height='76px'
           value={search}
-          onChange={(e) => { setSearch(e.target.toLowerCase.value) }}
+          onChange={(e) => { setSearch(e.target.value.toLowerCase()) }}
           placeholder="search exercises"
           type="text"
         />
